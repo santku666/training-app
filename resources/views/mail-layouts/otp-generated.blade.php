@@ -8,7 +8,7 @@
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 
-    <title>New Post Created</title>
+    <title>OTP Generated</title>
   </head>
   <body>
     
@@ -80,8 +80,8 @@
                                                       <tbody>
                                                         <tr>
                                                           <td>
-                                                            <p style="margin:10px 0 10px 0;color:#565a5c;font-size:18px">Hi @isset($author){{$author}}@endisset !</p>
-                                                            <p style="margin:10px 0 10px 0;color:#565a5c;font-size:18px">You have Created a New Post With title " @isset($title){{$title}}@endisset ".</p>
+                                                            <p style="margin:10px 0 10px 0;color:#565a5c;font-size:18px">Hi User !</p>
+                                                            <p style="margin:10px 0 10px 0;color:#565a5c;font-size:18px">Your one Time Password is " @isset($code){{$code}}@endisset " will Expire in 1 Minutes.</p>
                                                           </td>
                                                         </tr>
                                                         <tr>

@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\NewUser;
 use App\Http\Requests\UpdateUser;
+use App\Models\Post;
 use App\Models\User as User_DB;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 
 class User extends Controller
@@ -30,6 +32,9 @@ class User extends Controller
         }
         $query->whereNull('deleted_at');
         $users=$query->paginate(10);
+        foreach ($users as $key => $user) {
+            $user->id=Crypt::encrypt($user?->id);
+        }
         return view('user.index',compact('users'));
     }
 
@@ -88,6 +93,7 @@ class User extends Controller
      */
     public function edit($id)
     {
+        $id=Crypt::decrypt($id);
         $user=User_DB::findOrFail($id);
         return view('user.edit',compact('user'));
     }
@@ -102,6 +108,7 @@ class User extends Controller
     public function update(UpdateUser $request, $id)
     {
         try {
+            $id=Crypt::decrypt($id);
             $user=User_DB::where('id',$id)->update([
                 'name'=>sanatize_name($request->input('name')),
                 'email'=>$request->input('email'),
@@ -122,7 +129,17 @@ class User extends Controller
      */
     public function destroy($id)
     {
-        $isDestroyed=User_DB::where('id',$id)->delete();
-        return redirect('/users');
+        try {
+            DB::beginTransaction();
+            $id=Crypt::decrypt($id);
+            $isDestroyed=User_DB::where('id',$id)->delete();
+            $delete_posts=Post::where('user_id',$id)->delete();
+            DB::commit();
+            return redirect('/users');
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            $message="Error Occured ".$e->getMessage()." On Line ".$e->getLine()." File".$e->getFile();
+            return view("errors.500",compact("message"));
+        }
     }
 }

@@ -31,9 +31,9 @@
                             <td>{{$key + 1}}</td>
                             <td>{{$item->title}}</td>
                             <td>{{$item->created_at}}</td>
-                            <td style="width: 150px">
+                            <td style="width: 100px">
                               <div class="d-flex justify-content-around">
-                                <a href="{{url("/user/posts/$item?->id/edit")}}" class="btn btn-info btn-sm"><i class="fas fa-pen-square text-white"></i></a>
+                                {{-- <a href="{{url("/user/posts/$item?->id/edit")}}" class="btn btn-info btn-sm"><i class="fas fa-pen-square text-white"></i></a> --}}
                                 <a href="{{url("/user/posts/$item?->id/view")}}" class="btn btn-info btn-sm"><i class="fas fa-eye text-white"></i></a>
                                 <form action="{{url("/user/posts/$item?->id")}}" method="POST">
                                   @method('delete')

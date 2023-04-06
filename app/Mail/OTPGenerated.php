@@ -10,7 +10,7 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class PostCreated extends Mailable
+class OTPGenerated extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -19,14 +19,12 @@ class PostCreated extends Mailable
      *
      * @return void
      */
-    private $title;
-    private $author;
+    private int $code;
     private $from_address;
     private $from_name;
     public function __construct($body)
     {
-        $this->title=array_key_exists('title',$body)?$body['title']:null;
-        $this->author=array_key_exists('author',$body)?$body['author']:null;
+        $this->code=array_key_exists('code',$body)?$body['code']:null;
         $this->from_address=array_key_exists('from_address',$body)?$body['from_address']:null;
         $this->from_name=array_key_exists('from_name',$body)?$body['from_name']:null;
     }
@@ -39,8 +37,8 @@ class PostCreated extends Mailable
     public function envelope()
     {
         return new Envelope(
-            from: new Address($this->from_address,$this->from_name),
-            subject: 'Post Created',
+            subject: 'One Time Password For Email Verification',
+            from:new Address($this->from_address,$this->from_name),
         );
     }
 
@@ -52,10 +50,9 @@ class PostCreated extends Mailable
     public function content()
     {
         return new Content(
-            view: 'mail-layouts.new-post-created',
+            view: 'mail-layouts.otp-generated',
             with:[
-                'title'=>$this->title,
-                'author'=>$this->author
+                'code'=>$this->code
             ]
         );
     }

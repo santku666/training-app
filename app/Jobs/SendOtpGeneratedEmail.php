@@ -2,17 +2,16 @@
 
 namespace App\Jobs;
 
+use App\Mail\OTPGenerated;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
-use App\Mail\PostCreated;
 
-class SendPostCreatedEmail implements ShouldQueue
+class SendOtpGeneratedEmail implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -21,15 +20,13 @@ class SendPostCreatedEmail implements ShouldQueue
      *
      * @return void
      */
-    public string $title;
-    public string $author;
+    public string $code;
     public string $from_address;
     public string $from_name;
     public string $to_address;
-    public function __construct(string $title,string $author,string $from_address,string $from_name,string $to_address)
+    public function __construct(string $code,string $from_address,string $from_name,string $to_address)
     {
-        $this->title=$title;
-        $this->author=$author;
+        $this->code=$code;
         $this->from_address=$from_address;
         $this->from_name=$from_name;
         $this->to_address=$to_address;
@@ -42,14 +39,13 @@ class SendPostCreatedEmail implements ShouldQueue
      */
     public function handle()
     {
-       
+               
         $body=[
-            'title'=>$this->title,
-            'author'=>$this->author,
+            'code'=>$this->code,
             "from_address"=>$this->from_address,
             "from_name"=>$this->from_name
         ];
         
-        Mail::to($this->to_address)->send(new PostCreated($body));
+        Mail::to($this->to_address)->send(new OTPGenerated($body));
     }
 }

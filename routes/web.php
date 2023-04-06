@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\MailPreview;
 use App\Http\Controllers\Post;
 use App\Http\Controllers\User;
 use App\Http\Controllers\UserAuth;
@@ -38,6 +39,15 @@ Route::prefix('user')->controller(UserAuth::class)->group(function(){
         Route::post('/','store');
         Route::delete('/{id}','destroy');
         Route::get('/{id}/view','show');
+        
     });
+    Route::middleware('auth')->controller(UserAuth::class)->group(function(){
+        Route::get('verify-email',function(){
+            return view('user.account.verify-email');
+        });
+    });
+});
+Route::prefix('mail-preview')->controller(MailPreview::class)->group(function(){ # mail preview routes for posts
+    Route::get('new-post-created','new_post_created');
 });
 

@@ -20,6 +20,8 @@ return new class extends Migration
             $table->string('mobile_no')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->integer('otp_limit',false,true)->default(5);
+            $table->integer('exhuasted_otp_limit',false,true)->default(0);
             $table->rememberToken();
             $table->timestamps();
             $table->softDeletes();

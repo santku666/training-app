@@ -27,6 +27,14 @@
                 <li><a class="dropdown-item" href="{{url('/user/logout')}}">Logout</a></li>
               </ul>
             </li>
+            @php
+              (bool)$IsEmailVerified=Auth::user()->email_verified_at!=null?true:false;
+            @endphp
+            @if ($IsEmailVerified==false)
+              <li class="nav-item">
+                <a class="nav-link" href="{{url("/user/verify-email")}}">Verify Email</a>
+              </li>
+            @endif
           @endauth
         </ul>
       </div>

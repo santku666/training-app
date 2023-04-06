@@ -30,6 +30,11 @@ class NotifyAuthor
     public function handle(PostCreated $event)
     {
         // dispatch job
-        $dispatch=SendPostCreatedEmail::dispatch();
+        $title=$event?->post?->title;
+        $author=Auth::user()->name;
+        $from_address=env('MAIL_FROM_ADDRESS');
+        $from_name=env('MAIL_FROM_NAME');
+        $to_address=Auth::user()->email;
+        $dispatch=SendPostCreatedEmail::dispatch($title,$author,$from_address,$from_name,$to_address);
     }
 }

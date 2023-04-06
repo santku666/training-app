@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class NewUser extends FormRequest
 {
@@ -25,8 +26,12 @@ class NewUser extends FormRequest
     {
         return [
             "name"=>["required","max:100"],
-            "email"=>["required","email","unique:users"],
-            "mobile_no"=>["required","digits:10","unique:users"],
+            "email"=>["required","email",Rule::unique('users')->where(function($query){
+                return $query->whereNull('deleted_at');
+            })],
+            "mobile_no"=>["required","digits:10",Rule::unique('users')->where(function($query){
+                return $query->whereNull('deleted_at');
+            })],
             "password"=>["required","min:8","max:255"]
         ];
     }

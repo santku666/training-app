@@ -8,6 +8,7 @@ use App\Models\Post as ModelsPost;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 
 class Post extends Controller
@@ -29,6 +30,11 @@ class Post extends Controller
             $query->where('title','like','%'.$request->input('query').'%');
         }
         $posts=$query->paginate(10);
+        if ($posts->total() > 0) {
+            foreach ($posts as $key => $post) {
+                $post->id=Crypt::encrypt($post?->id);
+            }
+        }
         return view('user.posts.index',compact('posts'));
     }
     /**
@@ -73,6 +79,7 @@ class Post extends Controller
      * */ 
     public function destroy($id)
     {
+        $id=Crypt::decrypt($id);
         $post=ModelsPost::where('id',$id)->first();
         if (Auth::user()?->id === $post?->user_id) { # check this post belongs to the user
             $delete=ModelsPost::where('id',$id)->delete();
@@ -87,6 +94,7 @@ class Post extends Controller
      * */ 
     public function show($id)
     { 
+        $id=Crypt::decrypt($id);
         $post=ModelsPost::where('id',$id)->with('user')->first();
         if (Auth::user()?->id === $post?->user_id) {
             return view('user.posts.view',compact('post'));
